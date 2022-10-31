@@ -14,7 +14,7 @@ sudo su -c "iptables-save > /etc/sysconfig/iptables"
 
 echo "Config environment ..."
 sudo useradd -M -s /sbin/nologin prometheus
-sudo cat << EOF > /etc/systemd/system/prometheus.service
+sudo su -c "cat << EOF > /etc/systemd/system/prometheus.service
 [Unit]
 Description=Node Exporter
 After=network.target
@@ -26,7 +26,7 @@ ExecStart=/usr/bin/node_exporter
 
 [Install]
 WantedBy=default.target
-EOF
+EOF"
 
 echo "Starting up ..."
 sudo systemctl daemon-reload
