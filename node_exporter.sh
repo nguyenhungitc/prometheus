@@ -3,7 +3,7 @@
 version="${VERSION:-1.4.0}"
 arch="${ARCH:-linux-amd64}"
 bin_dir="${BIN_DIR:-/usr/bin}"
-server="34.87.26.251/32"
+server="${SERVER:-34.87.26.251/32}"
 
 echo "Downloading node exporter ..."
 sudo wget "https://github.com/prometheus/node_exporter/releases/download/v$version/node_exporter-$version.$arch.tar.gz"
