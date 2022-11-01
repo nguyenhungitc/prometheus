@@ -1,14 +1,19 @@
 #!/bin/sh
 
+version="${VERSION:-1.4.0}"
+arch="${ARCH:-linux-amd64}"
+bin_dir="${BIN_DIR:-/usr/bin}"
+server="34.87.26.251/32"
+
 echo "Downloading node exporter ..."
-sudo wget "https://github.com/prometheus/node_exporter/releases/download/v1.4.0/node_exporter-1.4.0.linux-amd64.tar.gz"
-sudo tar -xvzf node_exporter-1.4.0.linux-amd64.tar.gz
-sudo mv node_exporter-1.4.0.linux-amd64/node_exporter /usr/bin
-sudo rm -rf node_exporter-1.4.0.linux-amd64*
+sudo wget "https://github.com/prometheus/node_exporter/releases/download/v$version/node_exporter-$version.$arch.tar.gz"
+sudo tar -xvzf node_exporter-$version.$arch.tar.gz
+sudo mv node_exporter-$version.$arch/node_exporter /usr/bin
+sudo rm -rf node_exporter-$version.$arch*
 
 echo "Config security ..."
 sudo restorecon -rv /usr/bin/node_exporter
-sudo iptables -A INPUT -s 34.87.26.251/32 -p tcp -m state --state NEW -m tcp --dport 9100 -j ACCEPT
+sudo iptables -A INPUT -s $server -p tcp -m state --state NEW -m tcp --dport 9100 -j ACCEPT
 sudo iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 9100 -j DROP
 sudo su -c "iptables-save > /etc/sysconfig/iptables"
 
