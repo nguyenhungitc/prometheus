@@ -8,7 +8,7 @@ server="34.87.26.251/32"
 echo "Downloading node exporter ..."
 sudo wget "https://github.com/prometheus/node_exporter/releases/download/v$version/node_exporter-$version.$arch.tar.gz"
 sudo tar -xvzf node_exporter-$version.$arch.tar.gz || { echo "ERROR! Extracting the node_exporter tar"; exit 1; }
-sudo mv node_exporter-$version.$arch/node_exporter /usr/bin
+sudo mv node_exporter-$version.$arch/node_exporter $bin_dir
 sudo rm -rf node_exporter-$version.$arch*
 
 echo "Config security ..."
