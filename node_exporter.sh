@@ -13,8 +13,8 @@ sudo rm -rf node_exporter-$version.$arch*
 
 echo "Config security ..."
 sudo restorecon -rv /usr/bin/node_exporter
-sudo iptables -A INPUT -s $server -p tcp -m state --state NEW -m tcp --dport 9100 -j ACCEPT
-sudo iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 9100 -j DROP
+sudo iptables -I INPUT -s $server -p tcp -m state --state NEW -m tcp --dport 9100 -j ACCEPT
+sudo iptables -I INPUT -p tcp -m state --state NEW -m tcp --dport 9100 -j DROP
 sudo su -c "iptables-save > /etc/sysconfig/iptables"
 
 echo "Config environment ..."
