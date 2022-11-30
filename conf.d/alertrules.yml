@@ -1,0 +1,191 @@
+groups:
+  - name: Alerting_rules
+    rules:
+    - alert: PrometheusJobRunning
+      expr: up{job="Prometheus"} == 0
+      for: 0m
+      labels:
+        severity: Critical
+      annotations:
+        Summary: Prometheus job running (instance {{ $labels.instance }})
+        Description: "A Prometheus job running\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: PrometheusTargetMissing
+      expr: up == 0
+      for: 0m
+      labels:
+        severity: Critical
+      annotations:
+        Summary: Prometheus target missing (instance {{ $labels.instance }})
+        Description: "A Prometheus target has disappeared. An exporter might be crashed.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostOutOfMemory
+      expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10
+      for: 2m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Host out of memory (instance {{ $labels.instance }})
+        Description: "Node memory is filling up (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostMemoryUnderMemoryPressure
+      expr: rate(node_vmstat_pgmajfault[1m]) > 1000
+      for: 2m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Host memory under memory pressure (instance {{ $labels.instance }})
+        Description: "The node is under heavy memory pressure. High rate of major page faults\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostUnusualNetworkThroughputIn
+      expr: sum by (instance) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 100
+      for: 5m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Host unusual network throughput in (instance {{ $labels.instance }})
+        Description: "Host network interfaces are probably receiving too much data (> 100 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostUnusualNetworkThroughputOut
+      expr: sum by (instance) (rate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 100
+      for: 5m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Host unusual network throughput out (instance {{ $labels.instance }})
+        Description: "Host network interfaces are probably sending too much data (> 100 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostUnusualDiskReadRate
+      expr: sum by (instance) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 50
+      for: 5m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Host unusual disk read rate (instance {{ $labels.instance }})
+        Description: "Disk is probably reading too much data (> 50 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostUnusualDiskWriteRate
+      expr: sum by (instance) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 50
+      for: 2m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Host unusual disk write rate (instance {{ $labels.instance }})
+        Description: "Disk is probably writing too much data (> 50 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostOutOfDiskSpace
+      expr: (node_filesystem_avail_bytes{mountpoint="/",fstype!="rootfs"} * 100) / node_filesystem_size_bytes{mountpoint="/",fstype!="rootfs"} < 15
+      for: 2m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Host out of disk space (instance {{ $labels.instance }})
+        Description: "Disk is almost full (< 15% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostHighCpuLoad
+      expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80
+      for: 0m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Host high CPU load (instance {{ $labels.instance }})
+        Description: "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostPhysicalComponentTooHot
+      expr: node_hwmon_temp_celsius > 75
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Host physical component too hot (instance {{ $labels.instance }})
+        description: "Physical hardware component too hot\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostNodeOvertemperatureAlarm
+      expr: node_hwmon_temp_crit_alarm_celsius == 1
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: Host node overtemperature alarm (instance {{ $labels.instance }})
+        description: "Physical node temperature alarm triggered\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostNetworkReceiveErrors
+      expr: rate(node_network_receive_errs_total[2m]) / rate(node_network_receive_packets_total[2m]) > 0.01
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: Host Network Receive Errors (instance {{ $labels.instance }})
+        description: "Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} receive errors in the last two minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostNetworkTransmitErrors
+      expr: rate(node_network_transmit_errs_total[2m]) / rate(node_network_transmit_packets_total[2m]) > 0.01
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: Host Network Transmit Errors (instance {{ $labels.instance }})
+        description: "Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} transmit errors in the last two minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostOomKillDetected
+      expr: increase(node_vmstat_oom_kill[1m]) > 0
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: Host OOM kill detected (instance {{ $labels.instance }})
+        description: "OOM kill detected\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostRaidDiskFailure
+      expr: node_md_disks{state="failed"} > 0
+      for: 2m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Host RAID disk failure (instance {{ $labels.instance }})
+        Description: "At least one device in RAID array on {{ $labels.instance }} failed. Array {{ $labels.md_device }} needs attention and possibly a disk swap\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HostConntrackLimit
+      expr: node_nf_conntrack_entries / node_nf_conntrack_entries_limit > 0.8
+      for: 5m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Host conntrack limit (instance {{ $labels.instance }})
+        Description: "The number of conntrack is approaching limit\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: BlackboxProbeFailed
+      expr: probe_success == 0
+      for: 0m
+      labels:
+        severity: Critical
+      annotations:
+        Summary: Blackbox probe failed (instance {{ $labels.instance }})
+        Description: "Probe failed\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: BlackboxProbeHttpFailure
+      expr: probe_http_status_code <= 199 OR probe_http_status_code >= 400
+      for: 0m
+      labels:
+        severity: Critical
+      annotations:
+        Summary: Blackbox probe HTTP failure (instance {{ $labels.instance }})
+        Description: "HTTP status code is not 200-399\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: BlackboxProbeSlowHttp
+      expr: avg_over_time(probe_http_duration_seconds[1m]) > 1
+      for: 1m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Blackbox probe slow HTTP (instance {{ $labels.instance }})
+        Description: "HTTP request took more than 1s\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: BlackboxProbeSlowPing
+      expr: avg_over_time(probe_icmp_duration_seconds[1m]) > 1
+      for: 1m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Blackbox probe slow ping (instance {{ $labels.instance }})
+        Description: "Blackbox ping took more than 1s\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
