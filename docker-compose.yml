@@ -1,0 +1,85 @@
+version: "3.3"
+
+services:
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: always
+    networks:
+      - default
+      - nginx-proxy
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=*****
+      - GF_USERS_ALLOW_SIGN_UP=false
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./conf.d:/etc/prometheus:ro
+    restart: always
+    command: --web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml
+    networks:
+      - default
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager
+    restart: unless-stopped
+    volumes:
+      - ./conf.d:/etc/prometheus:ro
+    command: --config.file=/etc/prometheus/alertmanager.yml --log.level=debug
+    networks:
+      - default
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+  blackbox:
+    image: prom/blackbox-exporter
+    container_name: blackbox
+    restart: unless-stopped
+    volumes:
+      - ./conf.d:/etc/prometheus:ro
+    command: --config.file=/etc/prometheus/blackbox.yml
+    networks:
+      - default
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+  pushgateway:
+    image: prom/pushgateway
+    container_name: pushgateway
+    restart: unless-stopped
+    networks:
+      - default
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+  telegrambot:
+    image: b3vis/prometheus_bot
+    container_name: telegrambot
+    restart: unless-stopped
+    volumes:
+      - ./conf.d:/etc/prometheus:ro
+    command: --config.file=/etc/prometheus/telegrambot.yml
+    networks:
+      - default
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  default:
+  nginx-proxy:
+    external: true
