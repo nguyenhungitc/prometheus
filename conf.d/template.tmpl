@@ -1,0 +1,24 @@
+{{- range $val := .Alerts }}
+{{$jobname := index $val.Labels "alertname" -}}
+{{$status := index $val.Status -}}
+{{if eq $status "firing"}}
+<b>[🔥 {{$status | str_UpperCase}}] {{$jobname}}</b>
+{{end -}}
+{{if eq $status "resolved"}}
+<b>[✅ {{$status | str_UpperCase}}] {{$jobname}}</b>
+{{end -}}
+
+{{$severity := index $val.Labels "severity" -}}
+{{if eq $severity "Warning" -}}
+<b>Severity: ⚠️ {{$severity}}</b>
+{{else if eq $severity "Critical" -}}
+<b>Severity: 🚨 {{$severity}}</b>
+{{else -}}
+<b>Severity: {{$severity}}</b>
+{{end -}}
+<b>Service: {{index $val.Labels "job"}} - {{index $val.Labels "instance"}}</b>
+<b>Active from: {{index $val.StartsAt | str_FormatDate}}</b>
+
+{{$val.Annotations.Summary}}
+{{$val.Annotations.Description}}
+{{- end -}}
