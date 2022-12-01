@@ -66,12 +66,13 @@ services:
         max-size: "10m"
         max-file: "3"
   telegrambot:
-    image: b3vis/prometheus_bot
+    build: telegrambot
+    image: telegrambot
     container_name: telegrambot
     restart: unless-stopped
     volumes:
       - ./conf.d:/etc/prometheus:ro
-    command: --config.file=/etc/prometheus/telegrambot.yml
+    command: -c /etc/prometheus/telegrambot.yml
     networks:
       - default
     logging:
