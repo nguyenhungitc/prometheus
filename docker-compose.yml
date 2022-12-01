@@ -35,7 +35,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./conf.d:/etc/prometheus:ro
-    command: --config.file=/etc/prometheus/alertmanager.yml --log.level=debug
+    command: --config.file=/etc/prometheus/alertmanager.yml
     networks:
       - default
     logging:
