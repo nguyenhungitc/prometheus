@@ -13,24 +13,6 @@
 #     Summary: Keepalived process running (instance {{ $labels.instance }})
 #     Description: "A Keepalived process running\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 #
-# - alert: KeepalivedProcessMysql
-#   expr: bash_monitoring_alert_mysql == 0
-#   for: 0m
-#   labels:
-#     severity: Warning
-#   annotations:
-#     Summary: Mysql process running (instance {{ $labels.instance }})
-#     Description: "A Mysql process running\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-#
-# - alert: TomcatProcessRunning
-#   expr: bash_monitoring_alert_tomcat == 0
-#   for: 0m
-#   labels:
-#     severity: Warning
-#   annotations:
-#     Summary: Tomcat process running (instance {{ $labels.instance }})
-#     Description: "A Tomcat process running\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-#
 
 pushgateway='http://127.0.0.1:9091/metrics/job/bash_monitoring_alert/instance/pushgateway'
 
