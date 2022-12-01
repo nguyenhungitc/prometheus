@@ -7,7 +7,7 @@ route:
 receivers:
 - name: 'web.hook'
   webhook_configs:
-  - url: 'http://telegrambot:9087/alert/{TelegramID}'
+  - url: 'http://telegrambot:9087/alert/{TelegramChatID}'
 inhibit_rules:
   - source_match:
       severity: 'critical'
