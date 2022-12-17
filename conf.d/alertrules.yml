@@ -1,6 +1,42 @@
 groups:
   - name: Alerting_rules
     rules:
+    - alert: KeepalivedProcessRunning
+      expr: bash_monitoring_alert_keepalived == 0
+      for: 0m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Keepalived process running (instance {{ $labels.instance }})
+        Description: "A Keepalived process running\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: HAproxyProcessRunning
+      expr: bash_monitoring_alert_haproxy == 0
+      for: 0m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: HAproxy process running (instance {{ $labels.instance }})
+        Description: "A HAproxy process running\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: MysqlProcessRunning
+      expr: bash_monitoring_alert_mysql == 0
+      for: 0m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Mysql process running (instance {{ $labels.instance }})
+        Description: "A Mysql process running\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: TomcatProcessRunning
+      expr: bash_monitoring_alert_tomcat == 0
+      for: 0m
+      labels:
+        severity: Warning
+      annotations:
+        Summary: Tomcat process running (instance {{ $labels.instance }})
+        Description: "A Tomcat process running\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
     - alert: PrometheusJobRunning
       expr: up{job="Prometheus"} == 0
       for: 0m
@@ -97,8 +133,8 @@ groups:
       labels:
         severity: warning
       annotations:
-        summary: Host physical component too hot (instance {{ $labels.instance }})
-        description: "Physical hardware component too hot\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        Summary: Host physical component too hot (instance {{ $labels.instance }})
+        Description: "Physical hardware component too hot\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
     - alert: HostNodeOvertemperatureAlarm
       expr: node_hwmon_temp_crit_alarm_celsius == 1
@@ -106,8 +142,8 @@ groups:
       labels:
         severity: critical
       annotations:
-        summary: Host node overtemperature alarm (instance {{ $labels.instance }})
-        description: "Physical node temperature alarm triggered\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        Summary: Host node overtemperature alarm (instance {{ $labels.instance }})
+        Description: "Physical node temperature alarm triggered\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
     - alert: HostNetworkReceiveErrors
       expr: rate(node_network_receive_errs_total[2m]) / rate(node_network_receive_packets_total[2m]) > 0.01
@@ -115,8 +151,8 @@ groups:
       labels:
         severity: warning
       annotations:
-        summary: Host Network Receive Errors (instance {{ $labels.instance }})
-        description: "Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} receive errors in the last two minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        Summary: Host Network Receive Errors (instance {{ $labels.instance }})
+        Description: "Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} receive errors in the last two minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
     - alert: HostNetworkTransmitErrors
       expr: rate(node_network_transmit_errs_total[2m]) / rate(node_network_transmit_packets_total[2m]) > 0.01
@@ -124,8 +160,8 @@ groups:
       labels:
         severity: warning
       annotations:
-        summary: Host Network Transmit Errors (instance {{ $labels.instance }})
-        description: "Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} transmit errors in the last two minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        Summary: Host Network Transmit Errors (instance {{ $labels.instance }})
+        Description: "Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} transmit errors in the last two minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
     - alert: HostOomKillDetected
       expr: increase(node_vmstat_oom_kill[1m]) > 0
@@ -133,8 +169,8 @@ groups:
       labels:
         severity: warning
       annotations:
-        summary: Host OOM kill detected (instance {{ $labels.instance }})
-        description: "OOM kill detected\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        Summary: Host OOM kill detected (instance {{ $labels.instance }})
+        Description: "OOM kill detected\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
     - alert: HostRaidDiskFailure
       expr: node_md_disks{state="failed"} > 0
@@ -165,7 +201,7 @@ groups:
 
     - alert: BlackboxProbeHttpFailure
       expr: probe_http_status_code <= 199 OR probe_http_status_code >= 400
-      for: 0m
+      for: 1m
       labels:
         severity: Critical
       annotations:
