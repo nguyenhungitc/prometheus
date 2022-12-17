@@ -1,16 +1,16 @@
-{{ define "__text_content" }}{{ range . }}{{ range .Labels.SortedPairs }}<b> - {{ .Name }}: {{ .Value }}</b>
+{{ define "__text_content" }}{{ range . }}{{ range .Labels.SortedPairs }}<b>{{ .Name | toUpper }}: {{ .Value }}</b>
 {{ end }}
-{{ range .Annotations.SortedPairs }} - {{ .Value }}
+{{ range .Annotations.SortedPairs }}{{ .Name }}: {{ .Value }}
 {{ end }}
 {{ end }}{{ end }}
 
 {{ define "telegram.template.message" }}
 {{ if gt (len .Alerts.Firing) 0 }}
-<b>[🔥 FIRING MONITOR ALERT]</b>
+<b>[🔥 {{ .Status | toUpper }}] [{{ range .Alerts }}{{ .StartsAt }}{{ end }}]</b>
 {{ template "__text_content" .Alerts.Firing }}
 {{ end }}
 {{ if gt (len .Alerts.Resolved) 0 }}
-<b>[✅ RESOLVED MONITOR ALERT]</b>
+<b>[✅ {{ .Status | toUpper }}] [{{ range .Alerts }}{{ .StartsAt }}{{ end }}]</b>
 {{ template "__text_content" .Alerts.Resolved }}
 {{ end }}
 {{ end }}
