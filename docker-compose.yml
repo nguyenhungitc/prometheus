@@ -4,7 +4,7 @@ services:
   grafana:
     image: grafana/grafana
     container_name: grafana
-    restart: always
+    restart: unless-stopped
     networks:
       - default
       - nginx-proxy
@@ -12,6 +12,7 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=*****
       - GF_USERS_ALLOW_SIGN_UP=false
+      - TZ="Asia/Ho_Chi_Minh"
     logging:
       options:
         max-size: "10m"
@@ -21,7 +22,9 @@ services:
     container_name: prometheus
     volumes:
       - ./conf.d:/etc/prometheus:ro
-    restart: always
+    restart: unless-stopped
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
     command: --web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml
     networks:
       - default
@@ -33,6 +36,8 @@ services:
     image: prom/alertmanager
     container_name: alertmanager
     restart: unless-stopped
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
     volumes:
       - ./conf.d:/etc/prometheus:ro
     command: --config.file=/etc/prometheus/alertmanager.yml
@@ -46,6 +51,8 @@ services:
     image: prom/blackbox-exporter
     container_name: blackbox
     restart: unless-stopped
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
     volumes:
       - ./conf.d:/etc/prometheus:ro
     command: --config.file=/etc/prometheus/blackbox.yml
@@ -59,6 +66,8 @@ services:
     image: prom/pushgateway
     container_name: pushgateway
     restart: unless-stopped
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
     networks:
       - default
     logging:
