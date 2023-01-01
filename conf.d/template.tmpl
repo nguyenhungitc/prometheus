@@ -1,6 +1,6 @@
-{{ define "__text_content" }}{{ range . }}{{ range .Labels.SortedPairs }}<b>{{ .Name | toUpper }}: {{ .Value }}</b>
+{{ define "__text_content" }}{{ range . }}{{ range .Labels.SortedPairs }}<b>{{ .Name | title }}: {{ .Value }}</b>
 {{ end }}
-{{ range .Annotations.SortedPairs }}{{ .Name }}: {{ .Value }}
+{{ range .Annotations.SortedPairs }}{{ .Name | title }}: {{ .Value }}
 {{ end }}
 {{ end }}{{ end }}
 
