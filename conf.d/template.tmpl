@@ -6,11 +6,11 @@
 
 {{ define "telegram.template.message" }}
 {{ if gt (len .Alerts.Firing) 0 }}
-<b>[🔥 {{ .Status | toUpper }}] ({{ range $i, $e := .Alerts }}{{ if eq $i 0 }}{{ .StartsAt.Local.Format "02/01 15:04" }}{{ end }}{{ end }})</b>
+<b>🔥 [Firing ({{ range $i, $e := .Alerts }}{{ if eq $i 0 }}{{ .StartsAt.Local.Format "02/01/2006 15:04" }}{{ end }}{{ end }})]</b>
 {{ template "__text_content" .Alerts.Firing }}
 {{ end }}
 {{ if gt (len .Alerts.Resolved) 0 }}
-<b>[✅ {{ .Status | toUpper }}] ({{ range $i, $e := .Alerts }}{{ if eq $i 0 }}{{ .StartsAt.Local.Format "02/01 15:04" }} - {{ .EndsAt.Local.Format "02/01 15:04" }}{{ end }}{{ end }})</b>
+<b>✅ [Resolved ({{ range $i, $e := .Alerts }}{{ if eq $i 0 }}{{ .StartsAt.Local.Format "02/01/2006 15:04" }}{{ end }}{{ end }})]</b>
 {{ template "__text_content" .Alerts.Resolved }}
 {{ end }}
 {{ end }}
