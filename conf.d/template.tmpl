@@ -1,16 +1,14 @@
-{{ define "__text_content" }}{{ range . }}{{ range .Labels.SortedPairs }}<b>{{ .Name | title }}: {{ .Value }}</b>
+{{ define "__text_content" }}{{ range .Labels.SortedPairs }}<b>{{ .Name | title }}: {{ .Value }}</b>
 {{ end }}
 {{ range .Annotations.SortedPairs }}{{ .Name | title }}: {{ .Value }}
-{{ end }}
 {{ end }}{{ end }}
 
 {{ define "telegram.template.message" }}
-{{ if gt (len .Alerts.Firing) 0 }}
-<b>🔥 [Firing ({{ (index .Alerts 0).StartsAt.Local.Format "02/01 15:04" }})]</b>
-{{ template "__text_content" .Alerts.Firing }}
+{{ range .Alerts }}
+{{ if eq (index .Status) "firing" }}
+<b>🔥 Firing ({{ .StartsAt.Local.Format "02/01 15:04" }})</b>
+{{ else }}
+<b>✅ Resolved ({{ .StartsAt.Local.Format "02/01 15:04" }})</b>
 {{ end }}
-{{ if gt (len .Alerts.Resolved) 0 }}
-<b>✅ [Resolved ({{ (index .Alerts 0).StartsAt.Local.Format "02/01 15:04" }})]</b>
-{{ template "__text_content" .Alerts.Resolved }}
-{{ end }}
-{{ end }}
+{{ template "__text_content" . }}
+{{ end }}{{ end }}
