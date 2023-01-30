@@ -11,7 +11,7 @@ receivers:
     bot_token: *****
     chat_id: *****
     message: '{{ template "telegram.template.message" . }}'
-    parse_mode: HTML
+    parse_mode: ''
 templates:
   - /etc/prometheus/*.tmpl
 inhibit_rules:
