@@ -4,9 +4,6 @@
 {{ end }}{{ end }}
 
 {{ define "telegram.template.message" }}{{ range .Alerts }}
-{{ if eq .Status "firing" }}
-🔥 FIRING ({{ .StartsAt.Local.Format "02/01 15:04" }})
-{{ else }}
-✅ RESOLVED ({{ .StartsAt.Local.Format "02/01 15:04" }})
-{{ end }}{{ template "__text_content" . }}
+{{ if eq .Status "firing" }}🔥{{ else }}✅{{ end }} {{ .Status | toUpper }} ({{ .StartsAt.Local.Format "02/01 15:04" }})
+{{ template "__text_content" . }}
 {{ end }}{{ end }}
